@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارتيفكال انتجلنس | منصة التنسيق والتهيئة الذكية</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070913',
+                            panel: '#0e1224',
+                            card: 'rgba(16, 22, 45, 0.75)',
+                            border: '#1f294d',
+                            cyan: '#00f0ff',
+                            violet: '#a855f7',
+                            pink: '#ec4899',
+                            emerald: '#10b981',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace']
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 20px rgba(0, 240, 255, 0.35)',
+                        'neon-violet': '0 0 20px rgba(168, 85, 247, 0.35)',
+                        'neon-glow': '0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(168, 85, 247, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #070913;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+                linear-gradient(to bottom, rgba(7, 9, 19, 0.95), #070913);
+            min-height: 100vh;
+        }
+
+        /* Cyberpunk Grid pattern */
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(31, 41, 77, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(31, 41, 77, 0.15) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism custom styling */
+        .glass-panel {
+            background: rgba(14, 18, 36, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090c1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f294d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* Scanline Animation for AI Process */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(1000%); opacity: 0; }
+        }
+
+        .ai-scanning::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #00f0ff, #a855f7, transparent);
+            box-shadow: 0 0 15px #00f0ff;
+            animation: scanline 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        /* Pulsing Glow */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .glow-pulse {
+            animation: pulse-glow 3s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-200 cyber-grid flex flex-col justify-between selection:bg-cyber-cyan selection:text-black">
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="fixed bottom-6 left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl glass-panel border border-cyber-cyan text-sm font-semibold pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-cyber-cyan text-base"></i>
+        <span id="toastMsg" class="text-white">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="border-b border-cyber-border/70 bg-[#070913]/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-tr from-cyber-cyan to-cyber-violet p-[2px] shadow-neon-cyan">
+                    <div class="w-full h-full bg-[#070913] rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-brain text-cyber-cyan text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-black tracking-wide bg-gradient-to-l from-cyber-cyan via-white to-cyber-violet bg-clip-text text-transparent">
+                            ارتيفكال انتجلنس
+                        </h1>
+                        <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan">
+                            V2.6 AI-CORE
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">نظام التهيئة والتنسيق الذكي للأكواد والنصوص</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-3">
+                <button onclick="loadSamplePreset('json')" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-border text-slate-300 hover:text-white border border-cyber-border transition">
+                    <i class="fa-solid fa-code text-cyber-cyan"></i>
+                    <span>مثال JSON</span>
+                </button>
+                <button onclick="loadSamplePreset('text')" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-border text-slate-300 hover:text-white border border-cyber-border transition">
+                    <i class="fa-solid fa-align-right text-cyber-violet"></i>
+                    <span>مثال نص عربي</span>
+                </button>
+                <button onclick="resetAll()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>إعادة ضبط</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 flex flex-col gap-6">
+
+        <!-- Top Status & Stats Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="glass-panel p-3.5 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/20 flex items-center justify-center text-cyber-cyan">
+                    <i class="fa-solid fa-file-lines text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 block font-medium">عدد الأسطر الحالية</span>
+                    <span id="statLines" class="text-lg font-mono font-bold text-white">0</span>
+                </div>
+            </div>
+
+            <div class="glass-panel p-3.5 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-violet/10 border border-cyber-violet/20 flex items-center justify-center text-cyber-violet">
+                    <i class="fa-solid fa-font text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 block font-medium">عدد الكلمات / الحروف</span>
+                    <span id="statChars" class="text-lg font-mono font-bold text-white">0 / 0</span>
+                </div>
+            </div>
+
+            <div class="glass-panel p-3.5 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-emerald/10 border border-cyber-emerald/20 flex items-center justify-center text-cyber-emerald">
+                    <i class="fa-solid fa-bolt-lightning text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 block font-medium">مساحة موفرة / تقليص</span>
+                    <span id="statSaved" class="text-lg font-mono font-bold text-cyber-emerald">0%</span>
+                </div>
+            </div>
+
+            <div class="glass-panel p-3.5 rounded-xl flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-cyber-pink/10 border border-cyber-pink/20 flex items-center justify-center text-cyber-pink">
+                    <i class="fa-solid fa-microchip text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] text-slate-400 block font-medium">زمن المعالجة الذكية</span>
+                    <span id="statTime" class="text-lg font-mono font-bold text-white">0 ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode Selector Tabs -->
+        <div class="flex flex-wrap gap-2 border-b border-cyber-border pb-3">
+            <button onclick="switchTab('code')" id="tabBtn-code" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-gradient-to-r from-cyber-cyan/20 to-cyber-violet/20 text-cyber-cyan border border-cyber-cyan/40 shadow-neon-cyan">
+                <i class="fa-solid fa-terminal"></i>
+                <span>تنسيق الأكواد والبيانات</span>
+            </button>
+            <button onclick="switchTab('text')" id="tabBtn-text" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-cyber-panel/60 hover:bg-cyber-panel text-slate-400 border border-cyber-border/80">
+                <i class="fa-solid fa-feather-pointed"></i>
+                <span>تهيئة وتنظيف النصوص العربية</span>
+            </button>
+            <button onclick="switchTab('transform')" id="tabBtn-transform" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-cyber-panel/60 hover:bg-cyber-panel text-slate-400 border border-cyber-border/80">
+                <i class="fa-solid fa-spell-check"></i>
+                <span>تحويل الحالات والأنماط</span>
+            </button>
+            <button onclick="switchTab('cleaners')" id="tabBtn-cleaners" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-cyber-panel/60 hover:bg-cyber-panel text-slate-400 border border-cyber-border/80">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>أدوات التنظيف المتقدمة</span>
+            </button>
+        </div>
+
+        <!-- Controls Toolbar Based on Current Mode -->
+        <div class="glass-panel p-4 rounded-2xl relative overflow-hidden">
+            <!-- Neon background blur -->
+            <div class="absolute -right-16 -top-16 w-32 h-32 bg-cyber-cyan/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            <!-- Code Mode Controls -->
+            <div id="controls-code" class="tab-content flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-400">لغة الكود:</label>
+                        <select id="codeLanguage" class="bg-cyber-dark/80 border border-cyber-border rounded-lg px-3 py-1.5 text-xs font-mono text-cyber-cyan focus:outline-none focus:border-cyber-cyan">
+                            <option value="json">JSON</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="sql">SQL Query</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-400">المسافة البادئة:</label>
+                        <select id="indentSize" class="bg-cyber-dark/80 border border-cyber-border rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-cyber-cyan">
+                            <option value="2">مسافتان (2 Spaces)</option>
+                            <option value="4" selected>4 مسافات (4 Spaces)</option>
+                            <option value="tab">علامة جدولة (Tab)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2 border-r border-cyber-border pr-3 mr-1">
+                        <label class="inline-flex items-center cursor-pointer gap-2">
+                            <input type="checkbox" id="sortJsonKeys" class="sr-only peer" checked>
+                            <div class="w-8 h-4 bg-cyber-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-cyber-cyan"></div>
+                            <span class="text-xs text-slate-300">ترتيب الحقول أبجدياً</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="formatCode(false)" class="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-cyber-cyan to-teal-300 hover:shadow-neon-cyan transition transform active:scale-95">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>تنسيق وترتيب الكود (Beautify)</span>
+                    </button>
+                    <button onclick="formatCode(true)" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-cyber-violet bg-cyber-violet/10 border border-cyber-violet/40 hover:bg-cyber-violet/20 transition">
+                        <i class="fa-solid fa-compress"></i>
+                        <span>ضغط وتصغير (Minify)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Text Mode Controls -->
+            <div id="controls-text" class="tab-content hidden flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="processArabicText('cleanSpaces')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/50 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        إزالة الفراغات المزدوجة
+                    </button>
+                    <button onclick="processArabicText('fixPunctuation')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/50 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        ضبط علامات الترقيم العربية
+                    </button>
+                    <button onclick="processArabicText('unifyLetters')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/50 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        توحيد الألف والياء والتاء المربوطة
+                    </button>
+                    <button onclick="processArabicText('removeTashkeel')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/50 hover:bg-cyber-pink/20 hover:text-cyber-pink border border-cyber-border transition">
+                        إزالة التشكيل والحركات
+                    </button>
+                    <button onclick="processArabicText('removeTatweel')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/50 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        إزالة المد والمدة (ـ)
+                    </button>
+                </div>
+
+                <button onclick="executeAllTextPolish()" class="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-black bg-gradient-to-r from-cyber-cyan via-teal-300 to-cyber-violet hover:shadow-neon-cyan transition transform active:scale-95">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>معالجة لغوية شاملة بنقرة واحدة</span>
+                </button>
+            </div>
+
+            <!-- Transform Mode Controls -->
+            <div id="controls-transform" class="tab-content hidden flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="convertCase('upper')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-violet/20 hover:text-cyber-violet border border-cyber-border transition">
+                        UPPERCASE (أحرف كبيرة)
+                    </button>
+                    <button onclick="convertCase('lower')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-violet/20 hover:text-cyber-violet border border-cyber-border transition">
+                        lowercase (أحرف صغيرة)
+                    </button>
+                    <button onclick="convertCase('title')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-violet/20 hover:text-cyber-violet border border-cyber-border transition">
+                        Title Case (بداية كل كلمة)
+                    </button>
+                    <button onclick="convertCase('slug')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        kebab-slug-url (رابط إنترنت)
+                    </button>
+                    <button onclick="convertCase('camel')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        camelCaseVariable
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="convertNumbers('toArabic')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 hover:bg-cyber-cyan/20 transition">
+                        أرقام هندية (١٢٣)
+                    </button>
+                    <button onclick="convertNumbers('toEnglish')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-violet/10 text-cyber-violet border border-cyber-violet/30 hover:bg-cyber-violet/20 transition">
+                        أرقام غربية (123)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Advanced Cleaners Mode Controls -->
+            <div id="controls-cleaners" class="tab-content hidden flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="runCleaner('emptyLines')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-emerald/20 hover:text-cyber-emerald border border-cyber-border transition">
+                        <i class="fa-solid fa-arrows-up-to-line ml-1"></i> إزالة السطور الفارغة
+                    </button>
+                    <button onclick="runCleaner('links')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-pink/20 hover:text-cyber-pink border border-cyber-border transition">
+                        <i class="fa-solid fa-link-slash ml-1"></i> إزالة الروابط (URLs)
+                    </button>
+                    <button onclick="runCleaner('emojis')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-amber/20 hover:text-cyber-amber border border-cyber-border transition">
+                        <i class="fa-regular fa-face-smile ml-1"></i> إزالة الإيموجي والرموز التعبيرية
+                    </button>
+                    <button onclick="runCleaner('dedupLines')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-cyan/20 hover:text-cyber-cyan border border-cyber-border transition">
+                        <i class="fa-solid fa-clone ml-1"></i> حذف الأسطر المتكررة
+                    </button>
+                    <button onclick="runCleaner('sortLinesAsc')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyber-border/40 hover:bg-cyber-violet/20 hover:text-cyber-violet border border-cyber-border transition">
+                        <i class="fa-solid fa-arrow-down-a-z ml-1"></i> ترتيب الأسطر أبجدياً
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Dual Workspace (Editor & Output) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 flex-1 min-h-[500px]">
+            
+            <!-- Left Workspace: INPUT -->
+            <div class="glass-panel rounded-2xl flex flex-col border border-cyber-border/80 shadow-lg relative group">
+                <!-- Workspace Bar -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-cyber-border/60 bg-cyber-panel/40">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                        <span class="text-xs font-mono font-semibold text-slate-300 mr-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-code-pull-request text-cyber-cyan"></i>
+                            المُدخل (Input Stream)
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="pasteFromClipboard()" class="p-1.5 px-2.5 rounded-md text-xs font-medium bg-cyber-border/40 hover:bg-cyber-cyan/20 hover:text-cyber-cyan text-slate-300 transition" title="لصق من الحافظة">
+                            <i class="fa-regular fa-paste"></i>
+                            <span class="hidden sm:inline mr-1">لصق</span>
+                        </button>
+                        <button onclick="clearInput()" class="p-1.5 px-2.5 rounded-md text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-300 transition" title="مسح المحتوى">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span class="hidden sm:inline mr-1">مسح</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Textarea Area with Line Counter -->
+                <div class="flex-1 flex overflow-hidden relative">
+                    <textarea 
+                        id="rawInput" 
+                        oninput="onInputChanged()"
+                        placeholder="ضع النص، البيانات أو الكود البرمجي هنا لبدء التهيئة والتنسيق الذكي..."
+                        class="w-full h-full p-4 bg-transparent text-slate-200 placeholder:text-slate-600 font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-cyber-cyan/50 leading-relaxed overflow-y-auto"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <!-- Input Footer Info -->
+                <div class="px-4 py-2 border-t border-cyber-border/40 bg-cyber-dark/40 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                    <span id="inputCursorPos">السطر: 1 | العمود: 1</span>
+                    <span id="inputByteSize">0 بايت</span>
+                </div>
+            </div>
+
+            <!-- Right Workspace: OUTPUT -->
+            <div id="outputContainer" class="glass-panel rounded-2xl flex flex-col border border-cyber-border/80 shadow-lg relative group transition-all">
+                <!-- Workspace Bar -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-cyber-border/60 bg-cyber-panel/40">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-cyber-cyan animate-pulse"></div>
+                        <span class="text-xs font-mono font-semibold text-cyber-cyan flex items-center gap-1.5">
+                            <i class="fa-solid fa-microchip"></i>
+                            المُخرَج المُنَسّق (AI Output)
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="copyOutput()" class="p-1.5 px-2.5 rounded-md text-xs font-bold bg-cyber-cyan/20 hover:bg-cyber-cyan text-cyber-cyan hover:text-black transition flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>نسخ</span>
+                        </button>
+                        <button onclick="downloadOutput()" class="p-1.5 px-2.5 rounded-md text-xs font-medium bg-cyber-border/40 hover:bg-cyber-border text-slate-300 hover:text-white transition" title="تحميل ملف">
+                            <i class="fa-solid fa-download"></i>
+                            <span class="hidden sm:inline mr-1">تنزيل</span>
+                        </button>
+                        <button onclick="swapInputOutput()" class="p-1.5 px-2.5 rounded-md text-xs font-medium bg-cyber-border/40 hover:bg-cyber-border text-slate-300 hover:text-white transition" title="استخدام المخرج كمدخل جديد">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Textarea Output -->
+                <div class="flex-1 flex overflow-hidden relative">
+                    <textarea 
+                        id="formattedOutput" 
+                        readonly
+                        placeholder="ستظهر النتيجة بعد المعالجة والتنسيق هنا بشكل دقيق ومحسن..."
+                        class="w-full h-full p-4 bg-transparent text-emerald-300 placeholder:text-slate-600 font-mono text-sm resize-none focus:outline-none leading-relaxed overflow-y-auto"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <!-- Output Footer Info -->
+                <div class="px-4 py-2 border-t border-cyber-border/40 bg-cyber-dark/40 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                    <span id="outputFormatStatus" class="text-cyber-cyan">جاهز للتهيئة</span>
+                    <span id="outputByteSize">0 بايت</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floating Smart Trigger Button for Quick AI Optimization -->
+        <div class="flex justify-center my-2">
+            <button onclick="triggerSmartGlobalOptimize()" class="relative group px-8 py-3.5 rounded-2xl font-black text-sm text-black bg-gradient-to-r from-cyber-cyan via-teal-300 to-cyber-violet shadow-neon-glow hover:shadow-neon-cyan transform hover:-translate-y-0.5 active:translate-y-0 transition duration-300 flex items-center gap-3">
+                <div class="absolute inset-0 rounded-2xl bg-white/20 filter blur-sm group-hover:blur-md transition opacity-0 group-hover:opacity-100"></div>
+                <i class="fa-solid fa-wand-magic-sparkles text-lg animate-spin text-black" style="animation-duration: 8s;"></i>
+                <span class="tracking-wide">معالجة وتنسيق ذكي فوري (Smart AI Formatter)</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-cyber-border/50 bg-[#070913]/90 py-4 px-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-slate-400">
+                <i class="fa-solid fa-shield-halved text-cyber-cyan"></i>
+                <span>منصة "ارتيفكال انتجلنس" - معالجة محلية 100% داخل المتصفح بأقصى سرعة وخصوصية</span>
+            </div>
+            <div class="font-mono text-slate-500 text-[11px]">
+                AI-FORMATTER ENGINE • RUNNING ON CLIENT-SIDE V8
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // DOM Elements
+        const rawInput = document.getElementById('rawInput');
+        const formattedOutput = document.getElementById('formattedOutput');
+        const outputContainer = document.getElementById('outputContainer');
+        const statLines = document.getElementById('statLines');
+        const statChars = document.getElementById('statChars');
+        const statSaved = document.getElementById('statSaved');
+        const statTime = document.getElementById('statTime');
+        const inputByteSize = document.getElementById('inputByteSize');
+        const outputByteSize = document.getElementById('outputByteSize');
+        const outputFormatStatus = document.getElementById('outputFormatStatus');
+
+        let currentActiveTab = 'code';
+
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            currentActiveTab = tabName;
+            
+            // Toggle active buttons styling
+            const tabs = ['code', 'text', 'transform', 'cleaners'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`tabBtn-${tab}`);
+                const ctrl = document.getElementById(`controls-${tab}`);
+                
+                if (tab === tabName) {
+                    btn.className = 'tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-gradient-to-r from-cyber-cyan/20 to-cyber-violet/20 text-cyber-cyan border border-cyber-cyan/40 shadow-neon-cyan';
+                    ctrl.classList.remove('hidden');
+                } else {
+                    btn.className = 'tab-btn px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition bg-cyber-panel/60 hover:bg-cyber-panel text-slate-400 border border-cyber-border/80';
+                    ctrl.classList.add('hidden');
+                }
+            });
+
+            showToast(`تم التبديل إلى قسم: ${getTabTitle(tabName)}`);
+        }
+
+        function getTabTitle(tab) {
+            switch(tab) {
+                case 'code': return 'تنسيق الأكواد';
+                case 'text': return 'تهيئة النصوص';
+                case 'transform': return 'تحويل الحالات';
+                case 'cleaners': return 'أدوات التنظيف المتقدمة';
+                default: return '';
+            }
+        }
+
+        // Realtime stats updates on typing
+        function onInputChanged() {
+            const text = rawInput.value;
+            const lines = text ? text.split('\n').length : 0;
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const bytes = new Blob([text]).size;
+
+            statLines.textContent = lines.toLocaleString('ar-EG');
+            statChars.textContent = `${words.toLocaleString('ar-EG')} ك / ${chars.toLocaleString('ar-EG')} ح`;
+            inputByteSize.textContent = `${formatBytes(bytes)}`;
+
+            // Update output bytes
+            const outBytes = new Blob([formattedOutput.value]).size;
+            outputByteSize.textContent = `${formatBytes(outBytes)}`;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 بايت';
+            const k = 1024;
+            const sizes = ['بايت', 'ك.ب', 'م.ب'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Track cursor in input
+        rawInput.addEventListener('keyup', updateCursorPosition);
+        rawInput.addEventListener('click', updateCursorPosition);
+        function updateCursorPosition() {
+            const pos = rawInput.selectionStart;
+            const lines = rawInput.value.substring(0, pos).split('\n');
+            const currentLine = lines.length;
+            const currentColumn = lines[lines.length - 1].length + 1;
+            document.getElementById('inputCursorPos').textContent = `السطر: ${currentLine} | العمود: ${currentColumn}`;
+        }
+
+        // Simulated AI Scan visual feedback
+        function triggerScanAnimation(callback) {
+            const start = performance.now();
+            outputContainer.classList.add('ai-scanning');
+            outputFormatStatus.textContent = 'جاري المعالجة بواسطة الذكاء الاصطناعي...';
+
+            setTimeout(() => {
+                try {
+                    callback();
+                    const duration = Math.round(performance.now() - start);
+                    statTime.textContent = `${duration} ms`;
+                    outputFormatStatus.textContent = 'اكتملت التهيئة بنجاح';
+                    computeSavings();
+                } catch (err) {
+                    showToast('خطأ أثناء المعالجة: ' + err.message, true);
+                    outputFormatStatus.textContent = 'حدث خطأ في المدخلات';
+                } finally {
+                    outputContainer.classList.remove('ai-scanning');
+                    onInputChanged();
+                }
+            }, 250);
+        }
+
+        function computeSavings() {
+            const inLen = rawInput.value.length;
+            const outLen = formattedOutput.value.length;
+            if (inLen > 0) {
+                const diff = inLen - outLen;
+                const percent = Math.round((diff / inLen) * 100);
+                if (percent > 0) {
+                    statSaved.textContent = `-${percent}% (${diff} حرف)`;
+                    statSaved.className = 'text-lg font-mono font-bold text-cyber-emerald';
+                } else if (percent < 0) {
+                    statSaved.textContent = `+${Math.abs(percent)}% (إضافة فراغات)`;
+                    statSaved.className = 'text-lg font-mono font-bold text-cyber-cyan';
+                } else {
+                    statSaved.textContent = '0%';
+                    statSaved.className = 'text-lg font-mono font-bold text-slate-300';
+                }
+            }
+        }
+
+        // --- CODE FORMATTING ENGINES ---
+        function formatCode(minify = false) {
+            const input = rawInput.value;
+            if (!input.trim()) {
+                showToast('يرجى إدخال كود للبدء بالتنسيق', true);
+                return;
+            }
+
+            const lang = document.getElementById('codeLanguage').value;
+            const indentVal = document.getElementById('indentSize').value;
+            const indent = indentVal === 'tab' ? '\t' : ' '.repeat(parseInt(indentVal, 10));
+
+            triggerScanAnimation(() => {
+                let result = '';
+                if (lang === 'json') {
+                    result = formatJSON(input, indent, minify);
+                } else if (lang === 'html') {
+                    result = formatHTML(input, indent, minify);
+                } else if (lang === 'css') {
+                    result = formatCSS(input, indent, minify);
+                } else if (lang === 'javascript') {
+                    result = formatJS(input, indent, minify);
+                } else if (lang === 'sql') {
+                    result = formatSQL(input, minify);
+                }
+                formattedOutput.value = result;
+                showToast(minify ? 'تم ضغط الكود وتقليصه بنجاح' : 'تم تنسيق وترتيب الكود بالكامل');
+            });
+        }
+
+        // 1. JSON Engine
+        function formatJSON(str, indent, minify) {
+            const parsed = JSON.parse(str);
+            const sortKeys = document.getElementById('sortJsonKeys').checked;
+
+            let objToFormat = parsed;
+            if (sortKeys && typeof parsed === 'object' && parsed !== null) {
+                objToFormat = sortObjectKeys(parsed);
+            }
+
+            if (minify) {
+                return JSON.stringify(objToFormat);
+            }
+            return JSON.stringify(objToFormat, null, indent);
+        }
+
+        function sortObjectKeys(obj) {
+            if (Array.isArray(obj)) {
+                return obj.map(sortObjectKeys);
+            } else if (obj !== null && typeof obj === 'object') {
+                return Object.keys(obj).sort().reduce((acc, key) => {
+                    acc[key] = sortObjectKeys(obj[key]);
+                    return acc;
+                }, {});
+            }
+            return obj;
+        }
+
+        // 2. HTML Engine
+        function formatHTML(html, indent, minify) {
+            if (minify) {
+                return html.replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim();
+            }
+            let formatted = '';
+            let pad = 0;
+            // Tokenize tags
+            const tokens = html.replace(/(>)(<)(\/*)/g, '$1\r\n$2$3').split('\r\n');
+            tokens.forEach((node) => {
+                let indentChange = 0;
+                if (node.match(/.+<\/\w[^>]*>$/)) {
+                    indentChange = 0;
+                } else if (node.match(/^<\/\w/)) {
+                    if (pad !== 0) pad -= 1;
+                } else if (node.match(/^<\w[^>]*[^\/]>.*$/)) {
+                    indentChange = 1;
+                } else {
+                    indentChange = 0;
+                }
+
+                formatted += indent.repeat(pad) + node.trim() + '\n';
+                pad += indentChange;
+            });
+            return formatted.trim();
+        }
+
+        // 3. CSS Engine
+        function formatCSS(css, indent, minify) {
+            if (minify) {
+                return css
+                    .replace(/\/\*[\s\S]*?\*\//g, '')
+                    .replace(/\s*([\{\};:,])\s*/g, '$1')
+                    .replace(/;\}/g, '}')
+                    .trim();
+            }
+            let res = '';
+            css = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ');
+            let depth = 0;
+            for (let i = 0; i < css.length; i++) {
+                const char = css[i];
+                if (char === '{') {
+                    depth++;
+                    res += ' {\n' + indent.repeat(depth);
+                } else if (char === '}') {
+                    depth = Math.max(0, depth - 1);
+                    res += '\n' + indent.repeat(depth) + '}\n' + indent.repeat(depth);
+                } else if (char === ';') {
+                    res += ';\n' + indent.repeat(depth);
+                } else {
+                    res += char;
+                }
+            }
+            return res.split('\n').map(l => l.trimRight()).filter(l => l.trim().length > 0).join('\n');
+        }
+
+        // 4. JS Engine
+        function formatJS(code, indent, minify) {
+            if (minify) {
+                return code
+                    .replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '')
+                    .replace(/\s*([=+\-*\/%{}();,:<>!&|])\s*/g, '$1')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+            // Basic beautifier
+            let formatted = '';
+            let pad = 0;
+            const lines = code.split('\n');
+            for (let line of lines) {
+                let trimmed = line.trim();
+                if (trimmed.startsWith('}') || trimmed.startsWith(']')) {
+                    pad = Math.max(0, pad - 1);
+                }
+                if (trimmed) {
+                    formatted += indent.repeat(pad) + trimmed + '\n';
+                }
+                if (trimmed.endsWith('{') || trimmed.endsWith('[')) {
+                    pad++;
+                }
+            }
+            return formatted.trim();
+        }
+
+        // 5. SQL Engine
+        function formatSQL(sql, minify) {
+            const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'ORDER BY', 'GROUP BY', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'LIMIT', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'HAVING'];
+            if (minify) {
+                return sql.replace(/\s+/g, ' ').trim();
+            }
+            let res = sql.replace(/\s+/g, ' ');
+            keywords.forEach(kw => {
+                const regex = new RegExp(`\\b${kw}\\b`, 'gi');
+                res = res.replace(regex, `\n${kw.toUpperCase()}`);
+            });
+            return res.trim().split('\n').map(s => s.trim()).join('\n  ');
+        }
+
+        // --- ARABIC TEXT FORMATTING ---
+        function processArabicText(type) {
+            const text = rawInput.value;
+            if (!text.trim()) {
+                showToast('يرجى كتابة نص لتطبيق التعديلات', true);
+                return;
+            }
+
+            triggerScanAnimation(() => {
+                let out = text;
+                if (type === 'cleanSpaces') {
+                    out = out.replace(/[ \t]+/g, ' ').replace(/^\s+|\s+$/gm, '');
+                } else if (type === 'fixPunctuation') {
+                    // Fix spaces around Arabic punctuation
+                    out = out
+                        .replace(/\s*([،؛؟!:\.ـ])\s*/g, '$1 ')
+                        .replace(/\(\s+/g, '(')
+                        .replace(/\s+\)/g, ')')
+                        .replace(/«\s+/g, '«')
+                        .replace(/\s+»/g, '»')
+                        .replace(/\s{2,}/g, ' ');
+                } else if (type === 'unifyLetters') {
+                    // Normalize Alef, Yaa, Taa Marbuta
+                    out = out
+                        .replace(/[إأآ]/g, 'ا')
+                        .replace(/ى/g, 'ي')
+                        .replace(/ة/g, 'ه');
+                } else if (type === 'removeTashkeel') {
+                    // Remove Arabic diacritics
+                    out = out.replace(/[\u064B-\u065F\u0670]/g, '');
+                } else if (type === 'removeTatweel') {
+                    // Remove Tatweel/Kashida
+                    out = out.replace(/ـ+/g, '');
+                }
+                formattedOutput.value = out;
+                showToast('تمت معالجة النص العربي بنجاح');
+            });
+        }
+
+        function executeAllTextPolish() {
+            const text = rawInput.value;
+            if (!text.trim()) {
+                showToast('الرجاء إدخال نص أولاً', true);
+                return;
+            }
+            triggerScanAnimation(() => {
+                let out = text
+                    .replace(/[\u064B-\u065F\u0670]/g, '') // remove tashkeel
+                    .replace(/ـ+/g, '') // remove tatweel
+                    .replace(/[ \t]+/g, ' ') // multi spaces
+                    .replace(/\s*([،؛؟!:\.])\s*/g, '$1 ') // fix punctuation
+                    .replace(/\n{3,}/g, '\n\n') // empty lines max 2
+                    .trim();
+                formattedOutput.value = out;
+                showToast('تم إجراء تنظيف وصيانة لغوية شاملة');
+            });
+        }
+
+        // --- TRANSFORM CASES ---
+        function convertCase(type) {
+            const text = rawInput.value;
+            if (!text) return;
+
+            triggerScanAnimation(() => {
+                let res = '';
+                if (type === 'upper') {
+                    res = text.toUpperCase();
+                } else if (type === 'lower') {
+                    res = text.toLowerCase();
+                } else if (type === 'title') {
+                    res = text.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                } else if (type === 'slug') {
+                    res = text
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s\u0621-\u064A-]/g, '')
+                        .replace(/[\s_-]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                } else if (type === 'camel') {
+                    res = text
+                        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => index === 0 ? word.toLowerCase() : word.toUpperCase())
+                        .replace(/\s+/g, '');
+                }
+                formattedOutput.value = res;
+                showToast('تم تحويل الحالة والنمط بنجاح');
+            });
+        }
+
+        function convertNumbers(mode) {
+            const text = rawInput.value;
+            if (!text) return;
+            const arabicIndic = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            const englishDigits = ['0','1','2','3','4','5','6','7','8','9'];
+
+            triggerScanAnimation(() => {
+                let res = text;
+                if (mode === 'toArabic') {
+                    for (let i = 0; i < 10; i++) {
+                        res = res.replace(new RegExp(englishDigits[i], 'g'), arabicIndic[i]);
+                    }
+                } else {
+                    for (let i = 0; i < 10; i++) {
+                        res = res.replace(new RegExp(arabicIndic[i], 'g'), englishDigits[i]);
+                    }
+                }
+                formattedOutput.value = res;
+                showToast('تم تحويل نسق الأرقام');
+            });
+        }
+
+        // --- ADVANCED CLEANERS ---
+        function runCleaner(type) {
+            const text = rawInput.value;
+            if (!text) return;
+
+            triggerScanAnimation(() => {
+                let out = text;
+                if (type === 'emptyLines') {
+                    out = out.split('\n').filter(line => line.trim() !== '').join('\n');
+                } else if (type === 'links') {
+                    out = out.replace(/(https?:\/\/[^\s]+)/g, '').replace(/\s{2,}/g, ' ');
+                } else if (type === 'emojis') {
+                    // Unicode emoji regex
+                    out = out.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '');
+                } else if (type === 'dedupLines') {
+                    const lines = out.split('\n');
+                    out = Array.from(new Set(lines)).join('\n');
+                } else if (type === 'sortLinesAsc') {
+                    const lines = out.split('\n');
+                    out = lines.sort((a, b) => a.localeCompare(b, 'ar')).join('\n');
+                }
+                formattedOutput.value = out;
+                showToast('تمت عملية التنظيف المتقدمة بنجاح');
+            });
+        }
+
+        // --- GLOBAL AI OPTIMIZATION (SMART DETECT) ---
+        function triggerSmartGlobalOptimize() {
+            const input = rawInput.value.trim();
+            if (!input) {
+                showToast('يرجى تزويد النظام بمدخلات أولاً لمعالجتها', true);
+                return;
+            }
+
+            // Detect if JSON
+            if ((input.startsWith('{') && input.endsWith('}')) || (input.startsWith('[') && input.endsWith(']'))) {
+                document.getElementById('codeLanguage').value = 'json';
+                switchTab('code');
+                formatCode(false);
+                return;
+            }
+
+            // Detect HTML / XML
+            if (input.startsWith('<') && input.endsWith('>')) {
+                document.getElementById('codeLanguage').value = 'html';
+                switchTab('code');
+                formatCode(false);
+                return;
+            }
+
+            // Detect CSS
+            if (input.includes('{') && input.includes('}') && input.includes(':')) {
+                document.getElementById('codeLanguage').value = 'css';
+                switchTab('code');
+                formatCode(false);
+                return;
+            }
+
+            // Otherwise, apply AI Arabic Text Beautification
+            switchTab('text');
+            executeAllTextPolish();
+        }
+
+        // --- UTILITY ACTIONS ---
+        function clearInput() {
+            rawInput.value = '';
+            formattedOutput.value = '';
+            onInputChanged();
+            showToast('تم تفريغ المحتوى بنجاح');
+        }
+
+        function copyOutput() {
+            const text = formattedOutput.value;
+            if (!text) {
+                showToast('لا يوجد محتوى في المخرج لنسخه', true);
+                return;
+            }
+            // Compatible clipboard copy
+            const tempEl = document.createElement('textarea');
+            tempEl.value = text;
+            document.body.appendChild(tempEl);
+            tempEl.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempEl);
+            showToast('تم نسخ المخرج إلى الحافظة بنجاح');
+        }
+
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(clipText => {
+                rawInput.value = clipText;
+                onInputChanged();
+                showToast('تم اللصق من الحافظة');
+            }).catch(() => {
+                showToast('تعذر الوصول للحافظة، استخدم Ctrl+V يدوياً', true);
+            });
+        }
+
+        function swapInputOutput() {
+            if (!formattedOutput.value) return;
+            rawInput.value = formattedOutput.value;
+            formattedOutput.value = '';
+            onInputChanged();
+            showToast('تم تحويل المخرج إلى مساحة الإدخال');
+        }
+
+        function downloadOutput() {
+            const text = formattedOutput.value;
+            if (!text) {
+                showToast('لا يوجد محتوى لتنزيله', true);
+                return;
+            }
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `artificial-intelligence-formatted-${Date.now()}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('بدأ تحميل الملف الآن');
+        }
+
+        function resetAll() {
+            rawInput.value = '';
+            formattedOutput.value = '';
+            statLines.textContent = '0';
+            statChars.textContent = '0 / 0';
+            statSaved.textContent = '0%';
+            statTime.textContent = '0 ms';
+            inputByteSize.textContent = '0 بايت';
+            outputByteSize.textContent = '0 بايت';
+            outputFormatStatus.textContent = 'جاهز للتهيئة';
+            showToast('تمت إعادة ضبط المنصة بالكامل');
+        }
+
+        // Sample Presets for Testing
+        function loadSamplePreset(type) {
+            if (type === 'json') {
+                rawInput.value = `{"system_name":"ارتيفكال انتجلنس","version":2.6,"status":"active","metrics":{"speed_ms":12,"accuracy":0.999},"features":["تنظيف النصوص","تنسيق الأكواد البرمجية","ضغط وتصغير","إزالة التشكيل"],"developer":{"role":"AI Core Engine","country":"Arab World"}}`;
+                document.getElementById('codeLanguage').value = 'json';
+                switchTab('code');
+            } else {
+                rawInput.value = `مَرْحَبًا  بِكُمْ   فِي أَدَاةِ   " اِرْتِيفِكَالْ  اِنْتِجِلِنْسْ "   لِلتَّنْسِيقِ  الذَّكِيّ...   \n\nتَعْمَلُ هَذِهِ   الأَدَاةُ عَلَى:   \n- إِزَالَةِ الفَرَاغَاتِ   المُكَرَّرَةِ  ،  \n- وَضَبْطِ   عَلَامَاتِ التَّرْقِيمِ  ! \n- وَتَهْيِئَةِ النُّصُوصِ العَرَبِيَّةِ بِشَكْلٍ   اِحْتِرَافِيٍّـ  .   \n\nرابط المشروع: https://example.ai/test   🚀✨🔥`;
+                switchTab('text');
+            }
+            onInputChanged();
+            showToast('تم تحميل النموذج التجريبي');
+        }
+
+        // Visual Toast Alert Box (No native alert)
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = message;
+            if (isError) {
+                toast.classList.remove('border-cyber-cyan');
+                toast.classList.add('border-red-500');
+                toastIcon.className = 'fa-solid fa-triangle-exclamation text-red-400 text-base';
+            } else {
+                toast.classList.remove('border-red-500');
+                toast.classList.add('border-cyber-cyan');
+                toastIcon.className = 'fa-solid fa-circle-check text-cyber-cyan text-base';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initial setup on load
+        window.onload = function() {
+            loadSamplePreset('json');
+            formatCode(false);
+        };
+    </script>
+</body>
+</html>
